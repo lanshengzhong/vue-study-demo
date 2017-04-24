@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script type="text/javascript" src='vue.js'></script>
+</head>
+<body>
+    
+    <div id="app">
+        <button v-bind:id='typeId'  v-bind:disabled='flag' >你的名字</button>
+        
+        <h1 @click='openMsg($event)' >他的名字</h1>
+        <template v-for='(items,index) in list'>
+            <p>{{ items.num | changeNum | changeAgain | changaTwo(1,index) }}----{{items.text}}----{{index+1}}</p>
+        </template>
+        
+        <num-item v-for='(items,index) in list'  v-bind:todo='items'  v-bind:msg='index'></num-item>
+
+        <h2 is='h2-item' v-for='(items,key,index) in list'  v-bind:todo='items'  v-bind:msg='index'> </h2>
+        
+    </div>
+
+
+    <script type="text/javascript">
+        
+        var app = new Vue({
+            el:'#app',
+            data: {
+                list: [
+                    { text: '蔬菜' ,num:'1'},
+                    { text: '奶酪' ,num:'2'},
+                    { text: '水果' ,num:'3'}
+                ],
+                text: '我是1',
+                flag: false,
+                typeId: 'h1',
+                num1: 1,
+                num2: 2,
+                num3: ''
+            },
+            mounted(){
+                setTimeout(()=>this.text='我是2',5000);
+            },
+            methods: {
+                changeText(){
+                    this.change = '我是2';
+                    this.nums='1_2';
+                },
+                getStyle(){
+
+                },
+                openMsg(e){
+                    this.flag = !this.flag;
+                    console.dir(e);
+                }
+            },
+            watch: {
+                text:function(newVal,oldVal){
+                    console.log(newVal);
+                    console.log(oldVal);
+                    this.text = '我是1'
+                }
+            },
+            computed: {
+                /*
+                计算属性computed    set get
+                 */
+                comText: {
+                    get(){
+                        return this.num1 + '_' + this.num2;
+                    },
+                    set(newVal,oldVal){
+                        console(newVal)
+                        console(oldVal)
+                    }
+                }
+
+
+            },
+            components: {
+                'num-item': {
+                    props: ['todo','msg'],
+                    template: '<li>-----{{todo.num}}----{{todo.text}}----{{msg}}------------{{text}}</li>',
+                    data(){
+                        return {
+                            text: '我是内部的文字'
+                        }
+                    }
+                },
+                'h2-item': {
+                    props: ['todo','msg'],
+                    template: '<h2 v-on:click="count+=1">我是内部的数据-{{count}}-----{{todo.num}}----{{todo.text}}----{{msg}}</h2>',
+                    data(){
+                        return {
+                            count: 1
+                        }
+                    }
+                }
+            },
+            filters: {
+                changeNum(num){
+                    if(num==2){
+                        num = num-0 + 2;
+                    }
+                    return num;
+                },
+                changeAgain(num){
+                    if(num==3){
+                        num = (num-0) * 22;
+                    }
+                    return num;
+                },
+                changaTwo(num,arg1,arg2){
+                    if(num==1){
+                        num = arg1 + arg2;
+                    }
+                    return num;
+                }
+            }
+
+        });
+
+
+    </script>
+
+
+</body>
+</html>
