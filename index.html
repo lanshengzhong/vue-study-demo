@@ -2,25 +2,29 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Document</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>style vue.js</title>
     <script type="text/javascript" src='vue.js'></script>
 </head>
 <body>
     
     <div id="app">
-        <button v-bind:id='typeId'  v-bind:disabled='flag' >你的名字</button>
+        <button v-bind:id='typeId' v-bind:disabled='flag' >你的名字</button>
         
-        <h1 @click='openMsg($event)' >他的名字</h1>
+        <h1 @click='openMsg($event)'>他的名字</h1>
         <template v-for='(items,index) in list'>
             <p>{{ items.num | changeNum | changeAgain | changaTwo(1,index) }}----{{items.text}}----{{index+1}}</p>
         </template>
         
-        <num-item v-for='(items,index) in list'  v-bind:todo='items'  v-bind:msg='index'></num-item>
+        <num-item v-for='(items,index) in list'  v-bind:todo='items'  v-bind:msg='index' ></num-item>
 
-        <h2 is='h2-item' v-for='(items,key,index) in list'  v-bind:todo='items'  v-bind:msg='index'> </h2>
-        
+        <h2 is='h2-item' v-for='(items,key,index) in list'  v-bind:todo='items'  v-bind:msg='index' hello='hello!'> </h2>
+
+        <p> {{total}}</p>
+        <button-counter v-on:sum="totalMent()"></button-counter>
+        <button-counter v-on:sum="totalMent()"></button-counter>
+
     </div>
-
 
     <script type="text/javascript">
         
@@ -35,6 +39,7 @@
                 text: '我是1',
                 flag: false,
                 typeId: 'h1',
+                total: 0,
                 num1: 1,
                 num2: 2,
                 num3: ''
@@ -53,6 +58,9 @@
                 openMsg(e){
                     this.flag = !this.flag;
                     console.dir(e);
+                },
+                totalMent(){
+                    this.total += 2;
                 }
             },
             watch: {
@@ -80,7 +88,21 @@
             },
             components: {
                 'num-item': {
-                    props: ['todo','msg'],
+                    props: {
+                        todo: {
+                            type: Object,
+                            default(){
+                                return{
+                                    message: '我是默认返回的哦，请多多关照'
+                                }
+                            }
+                        },
+                        msg:{
+                            type: Number,
+                            required: true,
+                            default: 10
+                        }
+                    },
                     template: '<li>-----{{todo.num}}----{{todo.text}}----{{msg}}------------{{text}}</li>',
                     data(){
                         return {
@@ -89,11 +111,25 @@
                     }
                 },
                 'h2-item': {
-                    props: ['todo','msg'],
-                    template: '<h2 v-on:click="count+=1">我是内部的数据-{{count}}-----{{todo.num}}----{{todo.text}}----{{msg}}</h2>',
+                    props: ['todo','msg','hello'],
+                    template: '<h2 v-on:click="count+=1">我是内部的数据-{{count}}--{{hello}}---{{todo.num}}----{{todo.text}}----{{msg}}</h2>',
                     data(){
                         return {
                             count: 1
+                        }
+                    }
+                },
+                'button-counter': {
+                    template: '<button @click="increment">{{ counter }}</button>',
+                    data(){
+                        return {
+                            counter: 0
+                        }
+                    },
+                    methods: {
+                        increment(){
+                            this.counter += 2;
+                            this.$emit('sum'); //触发自定义事件 sum
                         }
                     }
                 }
