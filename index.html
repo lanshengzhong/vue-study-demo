@@ -16,7 +16,9 @@
             <p>{{ items.num | changeNum | changeAgain | changaTwo(1,index) }}----{{items.text}}----{{index+1}}</p>
         </template>
         
-        <num-item v-for='(items,index) in list'  v-bind:todo='items'  v-bind:msg='index' ></num-item>
+        <num-item v-for='(items,index) in list'  v-bind:todo='items'  v-bind:msg='index' >
+            
+        </num-item>
 
         <h2 is='h2-item' v-for='(items,key,index) in list'  v-bind:todo='items'  v-bind:msg='index' hello='hello!'> </h2>
 
@@ -24,7 +26,17 @@
         <button-counter v-on:sum="totalMent()"></button-counter>
         <button-counter v-on:sum="totalMent()"></button-counter>
 
+        <template-component v-for='(items,index) in list'  v-bind:todo='items'  v-bind:msg='index' >
+
+        </template-component>
+
     </div>
+
+
+    <script type="text/x-template" id="hello-template">
+        <p>定义模版：在 JavaScript 标签里使用 text/x-template 类型，并且指定一个id。</p>
+    </script>
+
 
     <script type="text/javascript">
         
@@ -45,7 +57,8 @@
                 num3: ''
             },
             mounted(){
-                setTimeout(()=>this.text='我是2',5000);
+                setTimeout(()=>this.text='我是2',3000);
+                console.log('生命周期函数');
             },
             methods: {
                 changeText(){
@@ -64,7 +77,7 @@
                 }
             },
             watch: {
-                text:function(newVal,oldVal){
+                text(newVal,oldVal){
                     console.log(newVal);
                     console.log(oldVal);
                     this.text = '我是1'
@@ -83,8 +96,6 @@
                         console(oldVal)
                     }
                 }
-
-
             },
             components: {
                 'num-item': {
@@ -109,6 +120,29 @@
                             text: '我是内部的文字'
                         }
                     }
+                },
+                'template-component': {
+                    props: {
+                        todo: {
+                            type: Object,
+                            default(){
+                                return{
+                                    message: '我是默认返回的哦，请多多关照'
+                                }
+                            }
+                        },
+                        msg:{
+                            type: Number,
+                            required: true,
+                            default: 10
+                        }
+                    },
+                    template: '#hello-template',
+                    data(){
+                        return {
+                            'text': '内部数据'
+                        }
+                    },
                 },
                 'h2-item': {
                     props: ['todo','msg','hello'],
